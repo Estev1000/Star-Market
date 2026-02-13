@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Market - Sistema Premium</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Excel Library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar glass">
+            <div class="logo">
+                <img src="logo.jpeg" alt="Star Market Logo" class="logo-img">
+                <h2>Star <span class="highlight">Market</span></h2>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active" onclick="showSection('pos', this)">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>Caja</span>
+                </li>
+                <li onclick="showSection('inventory', this)">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Inventario</span>
+                </li>
+                <li onclick="showSection('sales', this)">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Ventas</span>
+                </li>
+                <li onclick="showSection('clients', this)">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Clientes</span>
+                </li>
+            </ul>
+
+            <div class="user-profile">
+                <div class="avatar">Admin</div>
+                <div class="info">
+                    <span class="name">Administrador</span>
+                    <span class="status">En línea</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- POS SECTION -->
+            <section id="pos" class="active-section">
+                <header class="top-bar glass">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="pos-search" placeholder="Buscar productos..." onkeyup="filterProducts()">
+                    </div>
+                    <div class="barcode-scanner">
+                        <i class="fa-solid fa-barcode"></i>
+                        <input type="text" id="barcode-input" placeholder="Escanear código de barras..."
+                            onkeypress="handleBarcodeInput(event)" autocomplete="off">
+                    </div>
+                    <div class="date-time" id="clock">12:00 PM</div>
+                </header>
+
+                <div class="pos-layout">
+                    <!-- Product Grid -->
+                    <div class="products-grid-container">
+                        <div class="category-tabs">
+                            <button class="tab active" onclick="filterCategory('all')">Todos</button>
+                            <button class="tab" onclick="filterCategory('Bebidas')">Bebidas</button>
+                            <button class="tab" onclick="filterCategory('Snacks')">Snacks</button>
+                            <button class="tab" onclick="filterCategory('Golosinas')">Golosinas</button>
+                            <button class="tab" onclick="filterCategory('Limpieza')">Limpieza</button>
+                            <button class="tab" onclick="filterCategory('Varios')">Varios</button>
+                        </div>
+                        <div class="products-grid custom-scroll" id="products-container">
+                            <!-- Products injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Cart / Current Order -->
+                    <div class="current-order glass" id="cart-panel">
+                        <div class="cart-header-mobile">
+                            <h3>Orden Actual</h3>
+                            <button class="btn-close-cart" onclick="toggleCartMobile()">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <!-- Desktop Header -->
+                        <h3 class="desktop-cart-title">Orden Actual</h3>
+
+                        <div class="client-selection" style="margin-bottom: 10px; display: flex; gap: 5px;">
+                            <select id="pos-client-select" class="client-select-input"
+                                style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+                                <option value="">Cliente: Consumidor Final</option>
+                                <!-- Clients injected by JS -->
+                            </select>
+                            <button onclick="prepareNewClient()" title="Crear Nuevo Cliente Rápido" style="
+                                background: var(--primary-color);
+                                border: none;
+                                border-radius: 8px;
+                                width: 40px;
+                                color: white;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </button>
+                            <button onclick="checkAndPayDebt()" title="Cobrar Deuda a este Cliente" style="
+                                background: var(--success-color);
+                                border: none;
+                                border-radius: 8px;
+                                width: 40px;
+                                color: white;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </button>
+                            <button onclick="checkAndDeleteClient()" title="Eliminar Cliente Seleccionado" style="
+                                background: var(--danger-color, #ef4444);
+                                border: none;
+                                border-radius: 8px;
+                                width: 40px;
+                                color: white;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+
+                        <div class="order-items custom-scroll" id="cart-items">
+                            <!-- Cart items injected by JS -->
+                            <div class="empty-cart-msg">
+                                <i class="fa-solid fa-basket-shopping"></i>
+                                <p>El carrito está vacío</p>
+                            </div>
+                        </div>
+                        <div class="order-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="subtotal-display">$0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="total-display">$0.00</span>
+                            </div>
+                            <div class="checkout-buttons" style="display: flex; gap: 10px;">
+                                <button class="btn-checkout" onclick="processSale('cash')" style="flex: 1;">
+                                    <i class="fa-solid fa-money-bill-wave"></i> Cobrar
+                                </button>
+                                <button class="btn-credit" onclick="processSale('credit')"
+                                    title="Cargar a Cuenta Corriente"
+                                    style="flex: 1; background: var(--secondary-color); color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600; font-family: 'Outfit', sans-serif;">
+                                    <i class="fa-solid fa-user-clock"></i> Fiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Floating Cart Button -->
+                <button class="mobile-cart-btn" onclick="toggleCartMobile()">
+                    <div class="cart-btn-info">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <span id="mobile-cart-count">0 items</span>
+                    </div>
+                    <span id="mobile-cart-total">$0.00</span>
+                </button>
+            </section>
+
+            <!-- INVENTORY SECTION -->
+            <section id="inventory" class="hidden-section">
+                <header class="top-bar glass">
+                    <h2>Gestión de Inventario</h2>
+                    <button class="btn-primary" onclick="prepareNewProduct()">
+                        <i class="fa-solid fa-plus"></i> Nuevo Producto
+                    </button>
+                </header>
+
+                <div class="table-container glass custom-scroll">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list">
+                            <!-- Inventory items injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SALES HISTORY SECTION -->
+            <section id="sales" class="hidden-section">
+                <header class="top-bar glass">
+                    <div class="header-left">
+                        <h2>Historial de Ventas</h2>
+                        <div class="action-buttons">
+                            <button class="btn-small" onclick="exportData('json')" title="Exportar JSON"><i
+                                    class="fa-solid fa-file-code"></i> JSON</button>
+                            <button class="btn-small" onclick="exportData('excel')" title="Exportar Excel"><i
+                                    class="fa-solid fa-file-excel"></i> Excel</button>
+                            <button class="btn-small" onclick="document.getElementById('import-file').click()"
+                                title="Importar"><i class="fa-solid fa-file-import"></i> Importar</button>
+                            <input type="file" id="import-file" accept=".json, .xlsx, .xls" style="display:none"
+                                onchange="importData(this)">
+                        </div>
+                    </div>
+                    <div class="stats-cards">
+                        <div class="stat-card glass-card-small">
+                            <h4>Ventas Hoy</h4>
+                            <span id="sales-today-count">0</span>
+                        </div>
+                        <div class="stat-card glass-card-small">
+                            <h4>Ingresos Hoy</h4>
+                            <span id="income-today-display">$0.00</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="table-container glass custom-scroll">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>ID Venta</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Total</th>
+                                <th>Cliente</th>
+                                <th>Tipo</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-list">
+                            <!-- Sales history injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- CLIENTS SECTION -->
+            <section id="clients" class="hidden-section">
+                <header class="top-bar glass">
+                    <h2>Gestión de Clientes</h2>
+                    <button class="btn-primary" onclick="prepareNewClient()">
+                        <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
+                    </button>
+                </header>
+
+                <div class="table-container glass custom-scroll">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Deuda (Saldo)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-list">
+                            <!-- Clients injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-product-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal" onclick="closeModal('add-product-modal')">&times;</span>
+            <h3 id="modal-title">Agregar Nuevo Producto</h3>
+            <form id="add-product-form" onsubmit="handleProductForm(event)">
+                <input type="hidden" id="prod-id"> <!-- Hidden ID for edits -->
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="new-prod-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="new-prod-cat">
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Snacks">Snacks</option>
+                        <option value="Golosinas">Golosinas</option>
+                        <option value="Limpieza">Limpieza</option>
+                        <option value="Varios">Varios</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="new-prod-price" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" id="new-prod-stock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Código de Barras (Opcional)</label>
+                    <input type="text" id="new-prod-barcode" placeholder="7790001234567">
+                </div>
+                <div class="form-group">
+                    <label>Emoji/Icono (Opcional)</label>
+                    <input type="text" id="new-prod-emoji" placeholder="🥤">
+                </div>
+                <button type="submit" class="btn-primary full-width" id="btn-save-prod">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="add-client-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal" onclick="closeModal('add-client-modal')">&times;</span>
+            <h3 id="client-modal-title">Agregar Nuevo Cliente</h3>
+            <form id="add-client-form" onsubmit="handleClientForm(event)">
+                <input type="hidden" id="client-id">
+                <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="client-name" required placeholder="Ej: Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono (Opcional)</label>
+                    <input type="tel" id="client-phone" placeholder="Ej: 11 1234 5678">
+                </div>
+                <button type="submit" class="btn-primary full-width" id="btn-save-client">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pay Debt Modal -->
+    <div id="pay-debt-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-modal" onclick="closeModal('pay-debt-modal')">&times;</span>
+            <h3>Registrar Pago de Deuda</h3>
+            <p id="debt-client-name" style="margin-bottom: 15px; color: var(--text-secondary);">Cliente: -</p>
+            <form id="pay-debt-form" onsubmit="handleDebtPayment(event)">
+                <input type="hidden" id="debt-client-id">
+                <div class="form-group">
+                    <label>Monto a Pagar ($)</label>
+                    <input type="number" id="debt-amount" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Deuda Actual: <span id="current-debt-display"
+                            style="font-weight: bold; color: var(--accent);"></span></label>
+                </div>
+                <button type="submit" class="btn-primary full-width">Registrar Pago</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
