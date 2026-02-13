@@ -68,6 +68,7 @@ body {
     padding: 20px;
     border-right: 1px solid var(--glass-border);
     z-index: 10;
+    flex-shrink: 0;
 }
 
 .logo {
@@ -589,9 +590,10 @@ section.active-section {
 
 /* --- Styled Tables --- */
 .table-container {
-    height: calc(100% - 100px);
+    flex: 1;
+    min-height: 0;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .styled-table {
