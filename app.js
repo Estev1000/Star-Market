@@ -323,10 +323,9 @@ function processSale(paymentMethod = 'cash') {
         return;
     }
 
-    // Confirmation text
     const confirmMsg = paymentMethod === 'credit'
         ? '¿Confirmar venta como FIADO a Cuenta Corriente?'
-        : '¿Confirmar venta en EFECTIVO?';
+        : (paymentMethod === 'transfer' ? '¿Confirmar venta por TRANSFERENCIA?' : '¿Confirmar venta en EFECTIVO?');
 
     if (!confirm('¿' + confirmMsg + '?')) return;
 
@@ -661,6 +660,10 @@ function renderSalesHistory() {
     tbody.innerHTML = '';
 
     sales.forEach(s => {
+        const badgeClass = s.paymentMethod === 'credit' ? 'badge-credit' : (s.paymentMethod === 'transfer' ? 'badge-transfer' : 'badge-cash');
+        const badgeText = s.paymentMethod === 'credit'
+            ? 'CREDITO'
+            : (s.paymentMethod === 'transfer' ? 'TRANSFERENCIA' : (s.paymentMethod === 'debt_payment' ? 'PAGO DEUDA' : 'EFECTIVO'));
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>#${s.id}</td>
@@ -668,7 +671,7 @@ function renderSalesHistory() {
             <td>${s.time}</td>
             <td>$${s.total.toFixed(2)}</td>
             <td>${s.clientName || 'Consumidor Final'}</td>
-            <td><span class="badge ${s.paymentMethod === 'credit' ? 'badge-credit' : 'badge-cash'}">${s.paymentMethod === 'credit' ? 'CREDITO' : (s.paymentMethod === 'debt_payment' ? 'PAGO DEUDA' : 'EFECTIVO')}</span></td>
+            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
             <td>
                 <div style="display:flex; justify-content:space-between; align-items:center">
                     <small>${s.items.map(i => `${i.qty}x ${i.name}`).join(', ')}</small>
@@ -866,6 +869,7 @@ function printTicket(saleId) {
     printWindow.document.write(`<p>${sale.date} - ${sale.time}</p>`);
     printWindow.document.write(`<p>Ticket #${sale.id}</p>`);
     printWindow.document.write(`<p>Cliente: ${sale.clientName || 'Consumidor Final'}</p>`);
+    if (sale.paymentMethod === 'transfer') printWindow.document.write('<p><strong>TRANSFERENCIA</strong></p>');
     if (sale.paymentMethod === 'credit') printWindow.document.write('<p><strong>** A CUENTA / FIADO **</strong></p>');
     printWindow.document.write('</div>');
 
