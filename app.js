@@ -4,6 +4,56 @@ let cart = [];
 let sales = [];
 let clients = [];
 
+function isPosActive() {
+    const posSection = document.getElementById('pos');
+    return !!posSection && posSection.classList.contains('active-section');
+}
+
+function focusBarcodeInput() {
+    const barcodeInput = document.getElementById('barcode-input');
+    if (barcodeInput) barcodeInput.focus();
+}
+
+function setupGlobalBarcodeCapture() {
+    let buffer = '';
+    let lastKeyTime = 0;
+    const maxInterKeyDelayMs = 120;
+
+    document.addEventListener('keydown', (e) => {
+        if (!isPosActive()) return;
+
+        const activeEl = document.activeElement;
+        const activeTag = activeEl && activeEl.tagName ? activeEl.tagName.toLowerCase() : '';
+        const activeId = activeEl && activeEl.id ? activeEl.id : '';
+        const isTypingInOtherField = (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') && activeId !== 'barcode-input';
+        if (isTypingInOtherField) return;
+
+        if (e.key === 'Enter') {
+            const barcode = buffer.trim();
+            buffer = '';
+            lastKeyTime = 0;
+            if (!barcode) return;
+
+            const barcodeInput = document.getElementById('barcode-input');
+            if (barcodeInput) {
+                barcodeInput.value = barcode;
+                handleBarcodeInput({ key: 'Enter', preventDefault: () => { }, target: barcodeInput });
+            }
+            return;
+        }
+
+        if (e.key.length !== 1) return;
+        const now = Date.now();
+
+        if (lastKeyTime && (now - lastKeyTime) > maxInterKeyDelayMs) {
+            buffer = '';
+        }
+
+        lastKeyTime = now;
+        buffer += e.key;
+    });
+}
+
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
@@ -14,6 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderClientSelect();
     updateStats();
     startClock();
+
+    setupGlobalBarcodeCapture();
+    focusBarcodeInput();
 });
 
 // Load data from LocalStorage or Initialize defaults
@@ -89,6 +142,10 @@ function showSection(sectionId, element) {
     if (sectionId === 'inventory') renderInventory();
     if (sectionId === 'sales') renderSalesHistory();
     if (sectionId === 'clients') renderClients();
+
+    if (sectionId === 'pos') {
+        focusBarcodeInput();
+    }
 }
 
 // --- POS Logic ---
