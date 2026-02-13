@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Usuario - Star Market</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .manual-container {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .manual-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .manual-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .manual-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: manual-counter;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .step-list li::before {
+            counter-increment: manual-counter;
+            content: counter(manual-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        h3 {
+            color: var(--text-main);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: var(--accent-color);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .tip-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tip-box i {
+            color: var(--success-color);
+            margin-top: 3px;
+        }
+
+        .alert-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .alert-box i {
+            color: #ef4444;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation (Simplified for Manual) -->
+        <nav class="sidebar glass">
+            <div class="logo">
+                <img src="logo.jpeg" alt="Star Market Logo" class="logo-img">
+                <h2>Star <span class="highlight">Market</span></h2>
+            </div>
+
+            <ul class="nav-links">
+                <li onclick="window.location.href='index.html'">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Volver a App</span>
+                </li>
+                <li class="active">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Manual</span>
+                </li>
+            </ul>
+
+            <div class="user-profile">
+                <div class="avatar">Admin</div>
+                <div class="info">
+                    <span class="name">Administrador</span>
+                    <span class="status">Leyendo Manual</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content" style="padding: 0;">
+            <div class="manual-container custom-scroll">
+
+                <!-- Section 1: Cargar Productos -->
+                <div class="manual-section glass">
+                    <div class="manual-header">
+                        <h2><i class="fa-solid fa-box-open"></i> Cómo Cargar Productos</h2>
+                    </div>
+                    <p>Sigue estos pasos para agregar nuevos productos a tu inventario:</p>
+                    <ol class="step-list">
+                        <li>Ve a la sección <strong>Inventario</strong> haciendo clic en el ícono de cajas en el menú
+                            lateral.</li>
+                        <li>Haz clic en el botón <strong>+ Nuevo Producto</strong> ubicado en la parte superior derecha.
+                        </li>
+                        <li>Completa el formulario con los datos del producto:
+                            <ul
+                                style="list-style: disc; margin-left: 40px; margin-top: 10px; color: var(--text-muted);">
+                                <li><strong>Nombre:</strong> El nombre del producto (ej: Coca Cola 500ml).</li>
+                                <li><strong>Categoría:</strong> Selecciona el grupo al que pertenece (Bebidas, Snacks,
+                                    etc).</li>
+                                <li><strong>Precio:</strong> El valor de venta unitario.</li>
+                                <li><strong>Stock:</strong> La cantidad actual que tienes disponible.</li>
+                                <li><strong>Código de Barras:</strong> Escanea el código con tu lector o escríbelo
+                                    manualmente.</li>
+                                <li><strong>Emoji:</strong> Un ícono visual para identificarlo rápido.</li>
+                            </ul>
+                        </li>
+                        <li>Haz clic en <strong>Guardar Producto</strong>.</li>
+                    </ol>
+                    <div class="tip-box">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <p><strong>Tip:</strong> Si necesitas editar un producto, simplemente haz clic en el botón ✏️
+                            (lápiz) en la lista de inventario.</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Funcionamiento General -->
+                <div class="manual-section glass">
+                    <div class="manual-header">
+                        <h2><i class="fa-solid fa-store"></i> Funcionamiento de la App</h2>
+                    </div>
+                    <p>La aplicación está dividida en 4 secciones principales:</p>
+
+                    <h3>1. Caja (POS)</h3>
+                    <p>Es tu pantalla principal de venta. Aquí puedes:</p>
+                    <ul style="list-style: disc; margin-left: 20px; color: var(--text-muted); margin-bottom: 15px;">
+                        <li>Buscar productos por nombre o escanear códigos de barras.</li>
+                        <li>Agregar productos a la "Orden Actual" (Carrito).</li>
+                        <li>Seleccionar un cliente (o usar "Consumidor Final").</li>
+                        <li>Cobrar la venta en <strong>Efectivo</strong> o cargarla a una <strong>Cuenta Corriente
+                                (Fiar)</strong>.</li>
+                    </ul>
+
+                    <h3>2. Inventario</h3>
+                    <p>Administra todos tus productos, controla el stock y actualiza precios.</p>
+
+                    <h3>3. Ventas</h3>
+                    <p>Revisa el historial de todas las transacciones realizadas. Puedes exportar esta información a
+                        Excel para tu contabilidad.</p>
+
+                    <h3>4. Clientes</h3>
+                    <p>Gestiona tu lista de clientes y sus deudas. Aquí puedes ver quién te debe dinero y registrar los
+                        pagos (saldar deuda).</p>
+                </div>
+
+                <!-- Section 3: Lector de Códigos de Barras -->
+                <div class="manual-section glass">
+                    <div class="manual-header">
+                        <h2><i class="fa-solid fa-barcode"></i> Conectar y Usar Lector de Códigos</h2>
+                    </div>
+
+                    <h3>Configuración Inicial</h3>
+                    <p>KioscoFlow es compatible con la mayoría de lectores USB y Bluetooth. Funcionan como un "teclado",
+                        escribiendo automáticamente los números del código.</p>
+
+                    <strong style="display:block; margin-top: 15px;">Paso 1: Conectar</strong>
+                    <p>Conecta el lector a un puerto USB de tu computadora. Windows lo reconocerá automáticamente.
+                        Debería hacer un "beep" de confirmación.</p>
+
+                    <strong style="display:block; margin-top: 15px;">Paso 2: Asignar Códigos</strong>
+                    <p>Para que el sistema reconozca tus productos, debes guardarles su código de barras primero:</p>
+                    <ol class="step-list">
+                        <li>Ve a <strong>Inventario</strong> > <strong>Nuevo Producto</strong> (o editar uno existente).
+                        </li>
+                        <li>Haz clic en el campo "Código de Barras".</li>
+                        <li>Escanea el producto con el lector. El número aparecerá automáticamente.</li>
+                        <li>Guarda el producto.</li>
+                    </ol>
+
+                    <h3>Cómo Vender con el Lector</h3>
+                    <ol class="step-list">
+                        <li>Ve a la sección <strong>Caja</strong>.</li>
+                        <li>Asegúrate de estar en la pantalla principal. Puedes hacer clic en el campo que dice
+                            "Escanear código de barras...", aunque el sistema suele detectarlo solo.</li>
+                        <li>¡Apunta y dispara! Escanea los productos que el cliente trae.</li>
+                        <li>Se agregarán automáticamente al carrito a la derecha.</li>
+                        <li>Si un producto no está cargado, el borde se pondrá rojo para avisarte.</li>
+                    </ol>
+
+                    <div class="alert-box">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            <strong>Problemas comunes:</strong>
+                            <p>Si el lector no escribe nada, asegúrete de que esté bien conectado. Abre un Bloc de Notas
+                                y prueba escanear allí. Si aparecen números, el lector funciona bien.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
